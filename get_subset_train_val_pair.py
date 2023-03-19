@@ -19,6 +19,7 @@ def get_subset_train_val_pair():
             df_new = pd.read_csv(file_name, sep="\t", header=None)
             df_new = df_new.sample(frac=SUBSET_PROPORTION).reset_index(drop=True)
             df = pd.concat([df, df_new], axis=0, ignore_index=True)
+        print(f"Loaded {i+1}/10 shards, shape: {df.shape}")
 
     # Shuffle the dataset
     df = df.sample(frac=1).reset_index(drop=True)
