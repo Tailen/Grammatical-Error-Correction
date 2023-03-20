@@ -130,3 +130,6 @@ dmypy.json
 
 # Weights and Biases
 /wandb
+
+# Model weights
+/weights
