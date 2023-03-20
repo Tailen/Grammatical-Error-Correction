@@ -6,7 +6,7 @@ import argparse
 DATASET_FOLDER = "/media/tailen/My Passport/c4200m"
 np.random.seed(11411)
 
-def get_subset_train_val_pair(SUBSET_PROPORTION=0.005, TRAIN_PROPORTION=0.9):
+def get_subset_train_val_pair(train_filename, val_filename, SUBSET_PROPORTION=0.005, TRAIN_PROPORTION=0.9):
     # Get the subset of the dataset
     for i in range(10):
         file_name = os.path.join(DATASET_FOLDER, f"sentence_pairs.tsv-{i:05d}-of-00010")
@@ -28,12 +28,14 @@ def get_subset_train_val_pair(SUBSET_PROPORTION=0.005, TRAIN_PROPORTION=0.9):
     print("Shape of train: {}, val: {}".format(df_train.shape, df_val.shape))
 
     # Save the train and val sets
-    df_train.to_csv(os.path.join(DATASET_FOLDER, "train.csv"), header=None, index=None)
-    df_val.to_csv(os.path.join(DATASET_FOLDER, "val.csv"), header=None, index=None)
+    df_train.to_csv(os.path.join(DATASET_FOLDER, train_filename), header=None, index=None)
+    df_val.to_csv(os.path.join(DATASET_FOLDER, val_filename), header=None, index=None)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("train_filename", type=str, help="Output filename of the train dataset")
+    parser.add_argument("val_filename", type=str, help="Output filename of the validation dataset")
     parser.add_argument("subset_proportion", type=float, help="Proportion of the dataset to use")
     parser.add_argument("train_proportion", type=float, help="Proportion of the subset to use for training")
     args = parser.parse_args()
-    get_subset_train_val_pair(args.subset_proportion, args.train_proportion)
+    get_subset_train_val_pair(args.train_filename, args.val_filename, args.subset_proportion, args.train_proportion)
