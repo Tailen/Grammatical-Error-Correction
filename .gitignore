@@ -133,3 +133,5 @@ dmypy.json
 
 # Model weights
 /weights
+/weights_1M
+/weights_5M_bs128
