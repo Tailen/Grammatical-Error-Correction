@@ -128,10 +128,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# vscode dir
+.vscode/
+
 # Weights and Biases
 /wandb
 
 # Model weights
 /weights
-/weights_1M
-/weights_5M_bs128
