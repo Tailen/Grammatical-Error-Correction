@@ -28,8 +28,8 @@ def get_subset_train_val_pair(train_filename, val_filename, SUBSET_PROPORTION=0.
     print("Shape of train: {}, val: {}".format(df_train.shape, df_val.shape))
 
     # Save the train and val sets
-    df_train.to_csv(os.path.join(DATASET_FOLDER, train_filename), header=None, index=None)
-    df_val.to_csv(os.path.join(DATASET_FOLDER, val_filename), header=None, index=None)
+    df_train.to_csv(os.path.join(DATASET_FOLDER, train_filename), sep="\t", header=False, index=False)
+    df_val.to_csv(os.path.join(DATASET_FOLDER, val_filename), sep="\t", header=False, index=False)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

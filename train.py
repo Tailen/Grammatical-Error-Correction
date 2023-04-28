@@ -70,8 +70,9 @@ def main(train_file, val_file, output_dir):
     
     # Load datasets
     DATASET_FOLDER = "/media/tailen/My Passport/c4200m"
-    train_df = pd.read_csv(os.path.join(DATASET_FOLDER, train_file), header=None)
-    val_df = pd.read_csv(os.path.join(DATASET_FOLDER, val_file), header=None)
+    train_df = pd.read_csv(os.path.join(DATASET_FOLDER, train_file), sep="\t", header=None)
+    val_df = pd.read_csv(os.path.join(DATASET_FOLDER, val_file), sep="\t", header=None)
+    print("train_df shape: ", train_df.shape)
     train_dataset = C4200MDataset(train_df, tokenizer, config.MAX_LEN)
     val_dataset = C4200MDataset(val_df, tokenizer, config.MAX_LEN)
 
@@ -125,8 +126,8 @@ def main(train_file, val_file, output_dir):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("train_file", type=str, default="train.csv")
-    parser.add_argument("val_file", type=str, default="val.csv")
+    parser.add_argument("train_file", type=str, default="train.tsv")
+    parser.add_argument("val_file", type=str, default="val.tsv")
     parser.add_argument("output_dir", type=str, default="./weights")
     args = parser.parse_args()
     main(args.train_file, args.val_file, args.output_dir)
