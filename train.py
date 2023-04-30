@@ -122,6 +122,7 @@ def main(train_file, val_file, output_dir):
 
     # Train model
     trainer.train()
+    trainer.save_model(output_dir)
 
 
 if __name__ == "__main__":
