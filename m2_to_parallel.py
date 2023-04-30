@@ -88,5 +88,5 @@ if __name__ == "__main__":
     with open(orig_path, "w") as f_orig, open(corr_path, "w") as f_corr:
         for source, annotations in sentence_annotation_tuples:
             original_sent, edited_sent = m2_to_correct(source, annotations)
-            f_orig.write(original_sent + "\n")
-            f_corr.write(edited_sent + "\n")
+            f_corr.write(original_sent + "\n")
+            f_orig.write(edited_sent + "\n")
