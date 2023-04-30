@@ -20,7 +20,8 @@ https://codalab.lisn.upsaclay.fr/competitions/4057#participate
 def evalBEA19(model_path):
     # Define paths
     dataset_path = "datasets_test/bea19-test-data/test.bea19.txt"
-    output_path = "datasets_test/bea19-test-data/test.bea19.out"
+    # dataset_path = "datasets_train/wi+locness/corrupted/ABC.train.gold.bea19.txt"
+    output_path = dataset_path[:-3] + "out"
 
     # Check GPU availability
     assert(torch.cuda.is_available())
