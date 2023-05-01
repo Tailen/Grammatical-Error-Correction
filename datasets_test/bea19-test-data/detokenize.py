@@ -7,10 +7,13 @@ def read_lines(file_path):
 
 def detokenize(line):
     # Remove spaces before punctuation
-    line = re.sub(r'\s([?.!,"](?:\s|$))', r'\1', line)
+    line = re.sub(r'\s([?.!,";:](?:\s|$))', r'\1', line)
 
     # Join contractions
     line = re.sub(r"(\b\w+)(\s')(?=s|re|ve|ll|t|d|m|em)", r"\1'", line)
+
+    # Handle "n't" contractions
+    line = re.sub(r"(\b\w+)\s+n('t\b)", r"\1n\2", line)
 
     return line.strip()
 
