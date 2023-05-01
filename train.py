@@ -48,7 +48,7 @@ class C4200MDataset(Dataset):
         }
 
 
-def main(train_file, val_file, output_dir):
+def main(train_file, val_file, output_dir, checkpoint):
     # Init and config wandb
     wandb.init(project="GEC")
     config = wandb.config           # Initialize config
@@ -64,7 +64,7 @@ def main(train_file, val_file, output_dir):
     np.random.seed(config.SEED)     # numpy random seed
 
     # Load model, tokenizer, and data collator
-    model = T5ForConditionalGeneration.from_pretrained("t5-base")
+    model = T5ForConditionalGeneration.from_pretrained(checkpoint)
     tokenizer = T5Tokenizer.from_pretrained("t5-base")
     data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding="longest", return_tensors="pt")
     
@@ -130,5 +130,6 @@ if __name__ == "__main__":
     parser.add_argument("train_file", type=str, default="train.tsv")
     parser.add_argument("val_file", type=str, default="val.tsv")
     parser.add_argument("output_dir", type=str, default="./weights")
+    parser.add_argument("--checkpoint", type=str, default="t5-base")
     args = parser.parse_args()
-    main(args.train_file, args.val_file, args.output_dir)
+    main(args.train_file, args.val_file, args.output_dir, args.checkpoint)

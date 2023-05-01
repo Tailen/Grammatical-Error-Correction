@@ -39,10 +39,10 @@ def evalBEA19(model_path):
         for line in fin:
             input_ids = tokenizer.encode(line.strip(), return_tensors="pt").to(device)
             # Ignore very short and very long sentences
-            if input_ids.shape[1] < 8 or input_ids.shape[1] > 127:
+            if input_ids.shape[1] > 767:
                 output_sentence = line.strip()
             else:
-                output_ids = model.generate(input_ids, max_length=128, num_beams=4, early_stopping=True)
+                output_ids = model.generate(input_ids, max_length=768, num_beams=4, early_stopping=True)
                 output_sentence = tokenizer.decode(output_ids[0], skip_special_tokens=True)
             # Tokenize with spaCy
             doc = nlp(output_sentence)
