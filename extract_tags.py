@@ -25,7 +25,7 @@ def process_input_file(input_file, output_file):
         total_lines = len(lines)
 
         with mp.Pool() as pool:
-            results = pool.imap_unordered(get_error_tags, lines)
+            results = pool.imap(get_error_tags, lines)
 
             completed = 0
             for error_tags in results:

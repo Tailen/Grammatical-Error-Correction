@@ -9,7 +9,7 @@ from collections import defaultdict
 
 def pretty_print_dist(d, target, decimals=4):
     total_error = 0
-    for key, value in d.items():
+    for key, value in sorted(d.items()):
         total_error += abs(target[key]-value)
         print(f"{key}:\t{value:.{decimals}f}\t{(target[key]-value):.{decimals}f}")
     print(f"Total error: {total_error:.{decimals}f}")
@@ -34,6 +34,7 @@ def select_subset(tags, target_dist, subset_size):
         score = 0
         for tag in tag_set:
             score += target_dist[tag] - current_dist[tag]
+        score /= len(tag_set)
         tag_scores.append((i, tag_set, score))
 
     # Sort the tag sets by their scores in descending order
@@ -59,38 +60,34 @@ if __name__ == "__main__":
     tags = [["noop"] if len(tag_set)==1 and tag_set[0]=="" else tag_set for tag_set in tags]
 
     # Define the target distribution of error tags
-    target_dist = {'ADJ': 0.012864718331629135, 
-                   'ADJ:FORM': 0.0020093691294319075, 
-                   'ADV': 0.01279337978265522, 
-                   'CONJ': 0.004375431003733384, 
-                   'CONTR': 0.0026157467957101752, 
-                   'DET': 0.09465436473022139, 
-                   'K': 0.02163935985542054, 
-                   'MORPH': 0.015896606663020472, 
-                   'NOUN': 0.03690580933583811, 
-                   'NOUN:INFL': 0.00104629871828407, 
-                   'NOUN:NUM': 0.03365990535752503, 
-                   'NOUN:POSS': 0.005302832140394264, 
-                   'ORTH': 0.04031816992842366, 
-                   'OTHER': 0.10828002758423894, 
-                   'PART': 0.00709818562290443, 
-                   'PREP': 0.08290728366585023, 
-                   'PRON': 0.022067391149264023, 
-                   'PUNCT': 0.14751622951989157, 
-                   'SPELL': 0.03294651986778589, 
-                   'VERB': 0.049164150001188976, 
-                   'VERB:FORM': 0.029771954438446723, 
-                   'VERB:INFL': 0.0003804722611942073, 
-                   'VERB:SVA': 0.01864314079851616, 
-                   'VERB:TENSE': 0.05155399139181509, 
-                   'WO': 0.01350676527239436, 
-                   'SPACE': 0.0,
-                   'noop': 0.15208189665422206
+    target_dist = {'ADJ': 0.014653665623936019, 
+                   'ADJ:FORM': 0.0022887888081748495, 
+                   'ADV': 0.01457240684968129, 
+                   'CONJ': 0.004983871487623341, 
+                   'CONTR': 0.002979488389340041, 
+                   'DET': 0.10781685030698211, 
+                   'K': 0.024648494857267608, 
+                   'MORPH': 0.018107163529761973, 
+                   'NOUN': 0.042037872547779485, 
+                   'NOUN:INFL': 0.0011917953557360162, 
+                   'NOUN:NUM': 0.03834059831918934, 
+                   'NOUN:POSS': 0.00604023555293481, 
+                   'ORTH': 0.045924750582964, 
+                   'OTHER': 0.12333727618963523, 
+                   'PART': 0.008085248038345474, 
+                   'PREP': 0.09443623881303684, 
+                   'PRON': 0.02513604750279598, 
+                   'PUNCT': 0.16802960202973585, 
+                   'SPELL': 0.03752801057664206, 
+                   'VERB': 0.056000838590550314, 
+                   'VERB:FORM': 0.033911995122306644, 
+                   'VERB:INFL': 0.00043338012935855135, 
+                   'VERB:SVA': 0.021235626338569017, 
+                   'VERB:TENSE': 0.05872300752808371, 
+                   'WO': 0.015384994592228574, 
+                   'SPACE': 0.0, 
+                   'noop': 0.034171752337340926
                    }
-    
-    # Add 18% fake noop to the end of existing list
-    sample_count = len(tags)
-    tags = tags + [["noop"]] * int(sample_count * 0.18)
     
     # Select the subset iteratively
     selected_tags = list(enumerate(tags))
@@ -100,27 +97,6 @@ if __name__ == "__main__":
         selected_tags = select_subset(selected_tags, target_dist, len(selected_tags) - filter_size)
     print("\nFinal distribution:")
     final_dist = get_distribution(selected_tags, target_dist)
-
-    # Count and filter fake noop
-    fake_noop_count = 1
-    for i, tag_set in selected_tags:
-        if i >= sample_count:
-            fake_noop_count += 1
-    selected_tags.sort(key=lambda x: x[0])
-    selected_tags = selected_tags[:-fake_noop_count]
-    selected_indices = [i for i, _ in selected_tags]
-
-    # Choose indices of fake noop to add
-    fake_noop_indices = []
-    prev_index = -1
-    for i in selected_indices:
-        if len(fake_noop_indices) >= fake_noop_count:
-            break
-        if i - prev_index > 1:
-            for j in range(prev_index+1, i):
-                fake_noop_indices.append(j)
-        prev_index = i
-    print(f"Chose {len(fake_noop_indices)}/{fake_noop_count} fake noop indices")
 
     # Read the original sentence pair data
     with open(args.data_path, "r") as f:
@@ -132,17 +108,13 @@ if __name__ == "__main__":
             exit(1)
 
     # Parse the subset as sentence pairs
+    selected_tags.sort(key=lambda x: x[0])
+    selected_indices = [i for i, _ in selected_tags]
     selected_indices_set = set(selected_indices)
-    fake_noop_indices_set = set(fake_noop_indices)
     selected_lines = []
-    noop_lines = []
     for i, line in enumerate(original_lines):
         if i in selected_indices_set:
             selected_lines.append(line)
-        elif i in fake_noop_indices_set:
-            noop_lines.append(line)
-    noop_lines = [[line[1], line[1]] for line in noop_lines]
-    selected_lines = selected_lines + noop_lines
     random.shuffle(selected_lines)
 
     # Save the selected subset

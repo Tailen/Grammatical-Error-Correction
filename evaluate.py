@@ -39,7 +39,7 @@ def evalBEA19(model_path):
         for line in fin:
             input_ids = tokenizer.encode(line.strip(), return_tensors="pt").to(device)
             # Ignore very short and very long sentences
-            if input_ids.shape[1] < 8 or input_ids.shape[1] > 128:
+            if input_ids.shape[1] < 8 or input_ids.shape[1] > 127:
                 output_sentence = line.strip()
             else:
                 output_ids = model.generate(input_ids, max_length=128, num_beams=4, early_stopping=True)
